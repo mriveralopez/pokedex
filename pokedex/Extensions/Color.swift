@@ -5,4 +5,8 @@
 //  Created by Miguel Rivera on 1/8/24.
 //
 
-import Foundation
+import SwiftUI
+
+extension Color {
+    
+}

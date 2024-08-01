@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-class HomeViewModel: ObservableObject {
+class homeViewModel: ObservableObject {
     
-    @Published var pokemonModel = [PokemonModel]()
+    @Published var serviceModel: ServiceModel?
     @Published var searchText: String = ""
     
     let baseUrl = "https://pokeapi.co/api/v2/pokemon"
@@ -22,11 +22,12 @@ class HomeViewModel: ObservableObject {
                 print("Error: \(error)")
                 return
             }
-            guard let data = data?.parseData(removeString: "null,") else { return }
+            guard let data = data?.parseData(removeString: "") else { return }
             
             do {
-                let pokemon = try JSONDecoder().decode([PokemonModel].self, from: data)
-                    DispatchQueue.main.async { self.pokemonModel = pokemon
+                let pokemon = try JSONDecoder().decode(ServiceModel.self, from: data)
+                    DispatchQueue.main.async {
+                        self.serviceModel = pokemon
                 }
             } catch {
                 print("Error: \(error)")

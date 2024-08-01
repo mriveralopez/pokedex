@@ -11,33 +11,39 @@ struct HomeView: View{
     @ObservedObject var viewModel = homeViewModel()
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
     
-    private let gridItems = [GridItem(.flexible()),GridItem(.flexible())]
+    private let gridItems = [GridItem(.flexible())]
     
-    var body: some View{
-        NavigationView{
-            ScrollView{
-                LazyVGrid(columns: gridItems,spacing:16){
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                
+                LazyVGrid(columns: gridItems, spacing:16){
                     ForEach(filteredPokemon){
-                        pokemon in PokemonCell(pokemon: pokemon)
+                        pokemon in PokemonCell(pokemon: pokemon,isDarkMode: isDarkMode)
                     }
                 }
-            }.padding(.horizontal,8).ignoresSafeArea(.all,edges:.bottom).navigationBarTitleDisplayMode(.inline).navigationBarItems(leading:HStack{
-//                Image("Pokeball").resizable().frame(width: 40,height: 40)
+            }.padding(.horizontal,8).ignoresSafeArea(.all, edges: .bottom).navigationBarTitleDisplayMode(.inline).navigationBarItems(leading: HStack{
+                                Image("Pokeball").resizable().frame(width: 40,height: 40)
                 Text("Pokedex").font(Font.system(size: 26))
-            },trailing: HStack{ Button(action: {
+            }, trailing: HStack { Button(action: {
                 isDarkMode.toggle()
             }) {
-                Image(systemName:isDarkMode? "moon.circle.fill" : "sun.max.fill").font(.title)
+                Image(systemName: isDarkMode ? "moon.circle.fill" : "sun.max.fill").font(.title)
             }
                 Spacer().searchable(text: $viewModel.searchText)
             })
-        }.onAppear{
+        }
+        .onAppear {
             viewModel.fetchPokemons()
-        }.preferredColorScheme(isDarkMode ? .dark : .light)
+        }
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
+
     
     private var filteredPokemon: [PokemonModel] {
-        return viewModel.searchText.isEmpty ? viewModel.pokemonModel : viewModel.pokemonModel.filter { $0.name.lowercased().cotains(viewModel.searchText.lowercased()) }
+        return viewModel.searchText.isEmpty ? viewModel.serviceModel?.results ?? [] : (viewModel.serviceModel?.results ?? []) .filter{
+            $0.name.lowercased().contains(viewModel.searchText.lowercased())
+        }
     }
 }
 
