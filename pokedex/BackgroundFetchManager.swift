@@ -20,7 +20,7 @@ class BackgroundFetchManager {
     func handleAppRefresh(task: BGAppRefreshTask) {
         scheduleAppRefresh()  // Reprogramar la tarea
 
-        let context = PokemonMVVMApp().persistentContainer.viewContext
+        let context = pokedexApp().persistentContainer.viewContext
         let viewModel = PokemonViewModel(context: context)
         
         viewModel.fetchNextBatchOfPokemon { result in
