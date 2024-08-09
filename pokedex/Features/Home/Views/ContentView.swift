@@ -5,19 +5,21 @@
 //  Created by Miguel Rivera on 1/8/24.
 //
 
+import CoreData
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = PokemonViewModel()
-    
+    @Environment(\.managedObjectContext) private var viewContext
+    @StateObject private var viewModel: PokemonViewModel
+
+    init(context: NSManagedObjectContext) {
+        _viewModel = StateObject(wrappedValue: PokemonViewModel(context: context))
+    }
+
     var body: some View {
         PokemonListView(viewModel: viewModel)
-            .edgesIgnoringSafeArea(.all)
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+            .onAppear {
+                viewModel.fetchPokemonFromCoreData()
+            }
     }
 }
