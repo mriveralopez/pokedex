@@ -11,13 +11,17 @@ class PokemonCell: UITableViewCell {
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.adjustsFontForContentSizeCategory = true
         return label
     }()
+
     
     private let pokemonImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
+        imageView.layer.cornerRadius = 25
+        imageView.layer.masksToBounds = true
         return imageView
     }()
     
@@ -39,6 +43,11 @@ class PokemonCell: UITableViewCell {
             stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
         ])
+        
+        // Añadir selección visualmente atractiva
+        let selectedBackgroundView = UIView()
+        selectedBackgroundView.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.2)
+        self.selectedBackgroundView = selectedBackgroundView
     }
     
     required init?(coder: NSCoder) {
@@ -47,13 +56,16 @@ class PokemonCell: UITableViewCell {
     
     func configure(with pokemon: Pokemon) {
         nameLabel.text = pokemon.name.capitalized
-        print("Configuring cell for \(pokemon.name)")
+        nameLabel.accessibilityLabel = "Nombre del Pokémon: \(pokemon.name.capitalized)"
         
-        URLSession.shared.dataTask(with: pokemon.imageURL) { data, response, error in
+        pokemonImageView.image = nil
+        URLSession.shared.dataTask(with: pokemon.imageURL) { [weak self] data, response, error in
             guard let data = data, error == nil else { return }
             DispatchQueue.main.async {
-                self.pokemonImageView.image = UIImage(data: data)
+                self?.pokemonImageView.image = UIImage(data: data)
+                self?.pokemonImageView.accessibilityLabel = "\(pokemon.name.capitalized) imagen"
             }
         }.resume()
     }
+
 }
