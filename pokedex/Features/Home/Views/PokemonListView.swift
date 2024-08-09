@@ -30,6 +30,7 @@ class PokemonTableViewController: UITableViewController, UISearchBarDelegate {
         self.viewModel = viewModel
         self.filteredPokemonList = viewModel.pokemonList
         super.init(style: .plain)
+        self.title = "Pokémon"
     }
     
     required init?(coder: NSCoder) {
@@ -100,7 +101,6 @@ class PokemonTableViewController: UITableViewController, UISearchBarDelegate {
         return cell
     }
     
-    // Método opcional: Cargar más Pokémon cuando el usuario llegue al final de la lista
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == viewModel.pokemonList.count - 1 { // Si estamos en la última celda
             loadMoreData()
@@ -120,7 +120,6 @@ class PokemonTableViewController: UITableViewController, UISearchBarDelegate {
         }
     }
     
-    // Implementación del filtrado
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
             filteredPokemonList = viewModel.pokemonList
