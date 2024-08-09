@@ -6,7 +6,6 @@
 //
 
 import CoreData
-
 import SwiftUI
 
 struct ContentView: View {

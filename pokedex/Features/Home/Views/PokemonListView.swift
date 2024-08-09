@@ -19,13 +19,16 @@ struct PokemonListView: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {}
 }
 
-class PokemonTableViewController: UITableViewController {
+class PokemonTableViewController: UITableViewController, UISearchBarDelegate {
     
     private var viewModel: PokemonViewModel
     private var activityIndicator: UIActivityIndicatorView!
+    private var filteredPokemonList: [Pokemon] = []
+    private var searchBar: UISearchBar!
     
     init(viewModel: PokemonViewModel) {
         self.viewModel = viewModel
+        self.filteredPokemonList = viewModel.pokemonList
         super.init(style: .plain)
     }
     
@@ -36,18 +39,27 @@ class PokemonTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(PokemonCell.self, forCellReuseIdentifier: "PokemonCell")
+        setupSearchBar()
         setupActivityIndicator()
         loadInitialData()
         
         // Recargar la tabla cuando los datos se actualicen
-        viewModel.$pokemonList.sink { [weak self] _ in
+        viewModel.$pokemonList.sink { [weak self] pokemonList in
             DispatchQueue.main.async {
+                self?.filteredPokemonList = pokemonList
                 self?.tableView.reloadData()
                 self?.activityIndicator.stopAnimating()
             }
         }.store(in: &viewModel.cancellables)
     }
-
+    
+    private func setupSearchBar() {
+        searchBar = UISearchBar()
+        searchBar.delegate = self
+        searchBar.placeholder = "Buscar Pokémon"
+        searchBar.sizeToFit()
+        tableView.tableHeaderView = searchBar
+    }
     
     private func setupActivityIndicator() {
         activityIndicator = UIActivityIndicatorView(style: .large)
@@ -76,17 +88,52 @@ class PokemonTableViewController: UITableViewController {
             }
         }
     }
-
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.pokemonList.count
+        return filteredPokemonList.count
     }
-
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PokemonCell", for: indexPath) as! PokemonCell
-        let pokemon = viewModel.pokemonList[indexPath.row]
+        let pokemon = filteredPokemonList[indexPath.row]
         cell.configure(with: pokemon)
         return cell
     }
-
+    
+    // Método opcional: Cargar más Pokémon cuando el usuario llegue al final de la lista
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == viewModel.pokemonList.count - 1 { // Si estamos en la última celda
+            loadMoreData()
+        }
+    }
+    
+    private func loadMoreData() {
+        viewModel.fetchNextBatchOfPokemon { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let pokemons):
+                    print("Loaded more \(pokemons.count) Pokémon")
+                case .failure(let error):
+                    print("Failed to load more Pokémon: \(error)")
+                }
+            }
+        }
+    }
+    
+    // Implementación del filtrado
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            filteredPokemonList = viewModel.pokemonList
+        } else {
+            filteredPokemonList = viewModel.pokemonList.filter { $0.name.contains(searchText.lowercased()) }
+        }
+        tableView.reloadData()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        filteredPokemonList = viewModel.pokemonList
+        tableView.reloadData()
+        searchBar.resignFirstResponder()
+    }
 }
