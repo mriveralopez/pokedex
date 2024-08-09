@@ -39,7 +39,7 @@ class PokemonViewModelTests: XCTestCase {
         let testPokemon = Pokemon(name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon/1/")
         
         // Cuando se guarda en Core Data
-        viewModel.savePokemonToCoreData([testPokemon])
+        try viewModel.savePokemonToCoreData([testPokemon])
         
         // Entonces debería recuperarse correctamente
         let fetchRequest: NSFetchRequest<PokemonEntity> = PokemonEntity.fetchRequest()
@@ -53,7 +53,7 @@ class PokemonViewModelTests: XCTestCase {
     func testFetchingPokemonFromCoreData() throws {
         // Dado un Pokémon guardado en Core Data
         let testPokemon = Pokemon(name: "bulbasaur", url: "https://pokeapi.co/api/v2/pokemon/1/")
-        viewModel.savePokemonToCoreData([testPokemon])
+        try viewModel.savePokemonToCoreData([testPokemon])
         
         // Cuando se recupera desde Core Data
         viewModel.fetchPokemonFromCoreData()

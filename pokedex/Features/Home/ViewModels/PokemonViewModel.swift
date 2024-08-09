@@ -69,7 +69,7 @@ class PokemonViewModel: ObservableObject {
         pokemonList.append(contentsOf: filteredPokemons)
     }
     
-    private func savePokemonToCoreData(_ pokemons: [Pokemon]) throws {
+    func savePokemonToCoreData(_ pokemons: [Pokemon]) throws {
         for pokemon in pokemons {
             let fetchRequest: NSFetchRequest<PokemonEntity> = PokemonEntity.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "name == %@", pokemon.name)
