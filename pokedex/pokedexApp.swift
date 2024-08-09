@@ -9,7 +9,7 @@ import CoreData
 import SwiftUI
 
 @main
-struct pokedexApp: App {
+struct PokemonMVVMApp: App {
     let persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "PokemonModel")
         container.loadPersistentStores { (description, error) in
@@ -24,6 +24,9 @@ struct pokedexApp: App {
         WindowGroup {
             ContentView(context: persistentContainer.viewContext)
                 .environment(\.managedObjectContext, persistentContainer.viewContext)
+                .onAppear {
+                    BackgroundFetchManager.shared.scheduleAppRefresh()
+                }
         }
     }
 }

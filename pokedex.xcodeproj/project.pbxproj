@@ -10,6 +10,7 @@
 		494714692C6648EF00D90B2C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 494714682C6648EF00D90B2C /* CoreData.framework */; };
 		4947146C2C66495800D90B2C /* PokemonModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4947146A2C66495800D90B2C /* PokemonModel.xcdatamodeld */; };
 		4947146E2C664A2C00D90B2C /* PokemonViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4947146D2C664A2C00D90B2C /* PokemonViewModelTests.swift */; };
+		494714712C664CF500D90B2C /* BackgroundFetchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494714702C664CF500D90B2C /* BackgroundFetchManager.swift */; };
 		4961C9972C65419500FA659B /* PokemonListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4961C9962C65419500FA659B /* PokemonListView.swift */; };
 		49AD8FE62C5BE8DD0087CF09 /* pokedexApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AD8FE52C5BE8DD0087CF09 /* pokedexApp.swift */; };
 		49AD8FEA2C5BE8DF0087CF09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49AD8FE92C5BE8DF0087CF09 /* Assets.xcassets */; };
@@ -35,6 +36,8 @@
 		494714682C6648EF00D90B2C /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		4947146B2C66495800D90B2C /* PokemonModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PokemonModel.xcdatamodel; sourceTree = "<group>"; };
 		4947146D2C664A2C00D90B2C /* PokemonViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonViewModelTests.swift; sourceTree = "<group>"; };
+		4947146F2C664B6800D90B2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		494714702C664CF500D90B2C /* BackgroundFetchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundFetchManager.swift; sourceTree = "<group>"; };
 		4961C9962C65419500FA659B /* PokemonListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonListView.swift; sourceTree = "<group>"; };
 		49AD8FE22C5BE8DD0087CF09 /* pokedex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pokedex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49AD8FE52C5BE8DD0087CF09 /* pokedexApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pokedexApp.swift; sourceTree = "<group>"; };
@@ -97,8 +100,10 @@
 		49AD8FE42C5BE8DD0087CF09 /* pokedex */ = {
 			isa = PBXGroup;
 			children = (
+				4947146F2C664B6800D90B2C /* Info.plist */,
 				49AD90242C5C05B10087CF09 /* Features */,
 				49AD8FE52C5BE8DD0087CF09 /* pokedexApp.swift */,
+				494714702C664CF500D90B2C /* BackgroundFetchManager.swift */,
 				49AD8FE92C5BE8DF0087CF09 /* Assets.xcassets */,
 				49AD8FEB2C5BE8DF0087CF09 /* Preview Content */,
 				4947146A2C66495800D90B2C /* PokemonModel.xcdatamodeld */,
@@ -271,6 +276,7 @@
 				49AD901E2C5C01440087CF09 /* PokemonViewModel.swift in Sources */,
 				49AD90182C5BF8100087CF09 /* ContentView.swift in Sources */,
 				49AD901C2C5BFCA80087CF09 /* Pokemon.swift in Sources */,
+				494714712C664CF500D90B2C /* BackgroundFetchManager.swift in Sources */,
 				49AD8FE62C5BE8DD0087CF09 /* pokedexApp.swift in Sources */,
 				49AD901A2C5BFA0C0087CF09 /* PokemonCell.swift in Sources */,
 				4961C9972C65419500FA659B /* PokemonListView.swift in Sources */,
@@ -427,6 +433,7 @@
 				DEVELOPMENT_TEAM = 2P6MLXG9Q4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = pokedex/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -456,6 +463,7 @@
 				DEVELOPMENT_TEAM = 2P6MLXG9Q4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = pokedex/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -18,13 +18,16 @@ class PokemonViewModel: ObservableObject {
     var cancellables = Set<AnyCancellable>()
     
     private let context: NSManagedObjectContext
+    private var offset = 0
+    private let limit = 5
 
     init(context: NSManagedObjectContext) {
         self.context = context
     }
     
-    func fetchPokemon() {
-        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=100") else {
+    func fetchNextBatchOfPokemon(completion: @escaping (Result<[Pokemon], Error>) -> Void) {
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=\(limit)&offset=\(offset)") else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: nil)))
             return
         }
         
@@ -34,30 +37,45 @@ class PokemonViewModel: ObservableObject {
             .map { $0.data }
             .decode(type: PokemonList.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                switch completion {
+            .sink { [weak self] completionValue in
+                switch completionValue {
                 case .finished:
                     self?.isLoading = false
                 case .failure(let error):
-                    print("Error fetching Pokémon: \(error)")
                     self?.isLoading = false
+                    completion(.failure(error))
                 }
             } receiveValue: { [weak self] pokemonList in
-                self?.pokemonList = pokemonList.results
+                self?.offset += self?.limit ?? 0
+                self?.appendNewPokemons(pokemonList.results)
                 self?.savePokemonToCoreData(pokemonList.results)
+                completion(.success(pokemonList.results))
             }
             .store(in: &cancellables)
     }
+
+    // Este método asegura que no se agreguen Pokémon duplicados
+    private func appendNewPokemons(_ newPokemons: [Pokemon]) {
+        let existingNames = Set(pokemonList.map { $0.name })
+        let filteredPokemons = newPokemons.filter { !existingNames.contains($0.name) }
+        pokemonList.append(contentsOf: filteredPokemons)
+    }
     
-    func savePokemonToCoreData(_ pokemons: [Pokemon]) {
+    private func savePokemonToCoreData(_ pokemons: [Pokemon]) {
         for pokemon in pokemons {
-            let entity = PokemonEntity(context: context)
-            entity.name = pokemon.name
-            entity.url = pokemon.url
+            // Evitar guardar duplicados en Core Data también
+            let fetchRequest: NSFetchRequest<PokemonEntity> = PokemonEntity.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "name == %@", pokemon.name)
             
             do {
-                try context.save()
-                print("Saved \(pokemon.name) to Core Data")
+                let count = try context.count(for: fetchRequest)
+                if count == 0 { // Solo guardar si no existe
+                    let entity = PokemonEntity(context: context)
+                    entity.name = pokemon.name
+                    entity.url = pokemon.url
+                    try context.save()
+                    print("Saved \(pokemon.name) to Core Data")
+                }
             } catch {
                 print("Failed to save Pokémon: \(error)")
             }
@@ -76,3 +94,4 @@ class PokemonViewModel: ObservableObject {
         }
     }
 }
+

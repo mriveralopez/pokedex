@@ -18,8 +18,17 @@ struct ContentView: View {
 
     var body: some View {
         PokemonListView(viewModel: viewModel)
+            .edgesIgnoringSafeArea(.all)
             .onAppear {
-                viewModel.fetchPokemonFromCoreData()
+                // Esto puede ser opcional si ya se carga en el TableViewController
+                viewModel.fetchNextBatchOfPokemon { result in
+                    switch result {
+                    case .success(let pokemons):
+                        print("Loaded initial batch: \(pokemons.count)")
+                    case .failure(let error):
+                        print("Failed to load initial batch: \(error)")
+                    }
+                }
             }
     }
 }
