@@ -9,7 +9,7 @@ import CoreData
 import SwiftUI
 
 @main
-struct PokemonMVVMApp: App {
+struct pokedexApp: App {
     let persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "PokemonModel")
         container.loadPersistentStores { (description, error) in
